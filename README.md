@@ -1,6 +1,6 @@
 # Laravel AI Spam Detector
 
-Opt-in Laravel route middleware that checks request bodies and headers for spam and prompt injection using Laravel AI and Typesafe Jev. Based on [Spatie's Laravel package skeleton](https://github.com/spatie/package-skeleton-laravel).
+Opt-in Laravel route middleware and a validation rule for spam detection using Laravel AI and Typesafe Jev. The middleware checks request bodies and headers for spam and prompt injection; the validation rule checks individual text fields for spam.
 
 ## Requirements
 
@@ -10,12 +10,13 @@ The current classification implementation uses Laravel AI `1.x-dev`. The install
 
 ## Installation
 
-This package is local and has not been published to Packagist. For a sibling checkout:
+Install directly from Packagist with Composer:
 
 ```bash
-composer config repositories.ai-spam-detector path ../laravel-ai-spam-detector
-composer require digifactory/laravel-ai-spam-detector:@dev "laravel/ai:^1.0@dev"
+composer require digifactory/laravel-ai-spam-detector "laravel/ai:^1.0@dev"
 ```
+
+No custom Composer repository is required. Composer installs a tagged package release. The explicit `laravel/ai` constraint allows its development version while keeping the application's `minimum-stability` unchanged.
 
 Laravel discovers the service provider automatically. Configure `TYPESAFE_API_KEY` in the application's environment (Laravel AI's Typesafe provider reads this key).
 
@@ -120,18 +121,13 @@ php artisan ai:check-classifier --timeout=10
 
 Makes one minimal classification request without submitting a form or following links. Displays the elapsed time and validates the response shape. Errors include the exception and underlying cause. Exit codes: 0 success, 1 classification failure, 2 invalid timeout.
 
-## Migrating from the original application implementation
-
-1. Install this package and publish its config.
-2. Transfer settings from `ai-request-validation.php` to `ai-spam-detector.php`; rename the enable flag to `AI_SPAM_DETECTOR_ENABLED`.
-3. Replace `App\Http\Middleware\ValidateRequestWithAi` imports with the package namespace.
-4. Remove the application's old middleware alias and duplicate `CheckAiClassifier` command after switching consumers. The command name is intentionally preserved.
-
-The package creation does not modify the original application or switch its dependencies automatically.
-
 ## Development
 
+Clone the repository and install its development dependencies:
+
 ```bash
+git clone https://github.com/digifactory/laravel-ai-spam-detector.git
+cd laravel-ai-spam-detector
 composer install
 composer test
 composer analyse
